@@ -1,0 +1,105 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  passwordHash  String
+  name          String
+  createdAt     DateTime       @default(now())
+  refreshTokens RefreshToken[]
+  documents     Document[]
+  assets        Asset[]
+  transactions  Transaction[]
+  actions       Action[]
+  impacts       Impact[]
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model Document {
+  id           String    @id @default(uuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  filename     String
+  filepath     String
+  mimeType     String
+  fileSize     Int
+  fileHash     String?
+  createdAt    DateTime  @default(now())
+  assets       Asset[]
+}
+
+model Asset {
+  id              String        @id @default(uuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documentId      String?
+  document        Document?     @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  name            String
+  brand           String?
+  category        String        // e.g., Electronics, Appliances
+  purchasePrice   Float
+  purchaseDate    DateTime
+  retailer        String?
+  serialNumber    String?
+  warrantyExpiry  DateTime?
+  returnDeadline  DateTime?
+  currentPrice    Float?        // Controlled comparison price
+  priceCheckDate  DateTime?
+  actions         Action[]
+  transactions    Transaction[]
+  createdAt       DateTime      @default(now())
+}
+
+model Transaction {
+  id              String    @id @default(uuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assetId         String?
+  asset           Asset?    @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  amount          Float
+  date            DateTime
+  merchant        String
+  category        String    // Food, Subscriptions, Transport, Electronics
+  source          String    // e.g., Seeded UPI, Amazon Pay
+  createdAt       DateTime  @default(now())
+}
+
+model Action {
+  id              String    @id @default(uuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assetId         String?
+  asset           Asset?    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  type            String    // RETURN_WINDOW, WARRANTY_EXPIRY, SUBSCRIPTION_REVIEW, PRICE_ADVANTAGE
+  title           String
+  description     String
+  urgency         String    // HIGH, MEDIUM, LOW
+  financialValue  Float     @default(0.0)
+  status          String    @default("PENDING") // PENDING, RESOLVED, DISMISSED
+  createdAt       DateTime  @default(now())
+}
+
+model Impact {
+  id              String    @id @default(uuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type            String    // SAVED, PROTECTED, RECOVERED, PURCHASE_ADVANTAGE
+  amount          Float
+  title           String
+  createdAt       DateTime  @default(now())
+}
