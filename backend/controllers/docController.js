@@ -2,6 +2,8 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const path = require('path');
 const fs = require('fs');
+const Tesseract = require('tesseract.js');
+const llm = require('../services/llmEngine');
 
 exports.uploadDocument = async (req, res) => {
     try {
@@ -9,30 +11,13 @@ exports.uploadDocument = async (req, res) => {
             return res.status(400).json({ message: 'No file uploaded' });
         }
 
-        const document = await prisma.document.create({
-            data: {
-                userId: req.user.id,
-                filename: req.file.originalname,
-                filepath: req.file.filename,
-                mimeType: req.file.mimetype,
-                fileSize: req.file.size
-            }
+        const ocrResult = await Tesseract.recognize(req.file.path, 'eng');
+        const llmResponse = await llm.invoke({
+            input: ocrResult.data.text
         });
 
-        // Here we would normally call the AI OCR parser.
-        // For now, we simulate extraction.
-        
-        res.status(201).json({ 
-            message: 'Document uploaded successfully', 
-            document,
-            // Mock extracted data for demonstration
-            extracted: {
-                product_name: "Mock Extracted Product",
-                brand: "Mock Brand",
-                purchase_price: 1000,
-                purchase_date: new Date().toISOString()
-            }
-        });
+        // save receipt data
+        res.status(200).send(llmResponse.content);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
