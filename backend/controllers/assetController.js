@@ -96,6 +96,9 @@ exports.updateAsset = async (req, res) => {
                 category: updates.category !== undefined ? updates.category : asset.category,
                 purchasePrice: updates.purchasePrice !== undefined ? Number(updates.purchasePrice) : asset.purchasePrice,
                 serialNumber: updates.serialNumber !== undefined ? updates.serialNumber : asset.serialNumber,
+                warrantyExpiry: updates.warrantyExpiry ? new Date(updates.warrantyExpiry) : asset.warrantyExpiry,
+                returnWindowExpiry: updates.returnWindowExpiry ? new Date(updates.returnWindowExpiry) : asset.returnWindowExpiry,
+                subscriptionRenewal: updates.subscriptionRenewal ? new Date(updates.subscriptionRenewal) : asset.subscriptionRenewal,
             }
         });
 

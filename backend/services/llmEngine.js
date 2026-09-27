@@ -18,6 +18,10 @@ STRICT RULES:
    - For "Food & Dining": Extract nothing special, leave metadata empty.
 7. Preserve the original meaning. Normalize dates to YYYY-MM-DD.
 8. If a field is missing, unreadable, or not present, return null. For unclear text, use null rather than guessing.
+9. Predictive AI Workflow: Evaluate each extracted item and output boolean flags indicating if the item typically requires tracking.
+   - requires_warranty: true if it's an electronic, appliance, or high-value physical good. EXPLICITLY false for consumables, food, dining, and basic groceries.
+   - requires_return_window: true if it's a physical good that can typically be returned (apparel, electronics, home goods, etc.). EXPLICITLY false for food, perishables, consumables, digital services, dining, and basic groceries.
+   - requires_subscription: true if it's a recurring payment, SaaS, streaming service, or membership. EXPLICITLY false for consumables, food, dining, and basic groceries.
 
 Return EXACTLY this JSON structure:
 
@@ -53,6 +57,9 @@ Return EXACTLY this JSON structure:
       "unit_price": null,
       "total_price": null,
       "serial_number": null,
+      "requires_warranty": false,
+      "requires_return_window": false,
+      "requires_subscription": false,
       "metadata": {{}} 
     }}
   ],

@@ -1,13 +1,16 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ChatProvider } from './context/ChatContext';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import UploadPage from './pages/Upload';
 import AssetsPage from './pages/Assets';
+import ActionCenter from './pages/ActionCenter';
+import AskAssetra from './pages/AskAssetra';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
-import AIAssistant from './components/AIAssistant';
+import ChatWidget from './components/ChatWidget';
 
 const ProtectedRoute = ({ children }) => {
     const { user, loading } = useAuth();
@@ -21,7 +24,7 @@ const ProtectedRoute = ({ children }) => {
                     {children}
                 </main>
             </div>
-            <AIAssistant />
+            <ChatWidget />
         </div>
     ) : <Navigate to="/login" />;
 };
@@ -44,9 +47,15 @@ const AppLayout = () => (
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/upload" element={<ProtectedRoute><UploadPage /></ProtectedRoute>} />
         <Route path="/assets" element={<ProtectedRoute><AssetsPage /></ProtectedRoute>} />
+        <Route path="/action-center" element={<ProtectedRoute><ActionCenter /></ProtectedRoute>} />
+        <Route path="/ask-assetra" element={<ProtectedRoute><AskAssetra /></ProtectedRoute>} />
     </Routes>
 );
 
 export default function App() {
-    return <AppLayout />;
+    return (
+        <ChatProvider>
+            <AppLayout />
+        </ChatProvider>
+    );
 }

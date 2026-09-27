@@ -101,7 +101,10 @@ export default function AssetsPage() {
             brand: asset.brand || '',
             category: asset.category || '',
             purchasePrice: asset.purchasePrice || '',
-            serialNumber: asset.serialNumber || ''
+            serialNumber: asset.serialNumber || '',
+            warrantyExpiry: asset.warrantyExpiry ? new Date(asset.warrantyExpiry).toISOString().split('T')[0] : '',
+            returnWindowExpiry: asset.returnWindowExpiry ? new Date(asset.returnWindowExpiry).toISOString().split('T')[0] : '',
+            subscriptionRenewal: asset.subscriptionRenewal ? new Date(asset.subscriptionRenewal).toISOString().split('T')[0] : ''
         });
     };
 
@@ -515,7 +518,7 @@ export default function AssetsPage() {
                                         className={`w-full bg-slate-800 border ${!editAssetFormData.purchasePrice && editAssetFormData.purchasePrice !== 0 ? 'border-amber-500/50 focus:border-amber-500' : 'border-slate-700 focus:border-blue-500'} rounded-lg p-2.5 text-white outline-none focus:ring-1 focus:ring-blue-500 transition-colors`}
                                     />
                                 </div>
-                                <div className="space-y-1 md:col-span-2">
+                                <div className="space-y-1">
                                     <label className="text-sm font-medium text-slate-400">Serial Number (Optional)</label>
                                     <input 
                                         type="text" 
@@ -524,6 +527,39 @@ export default function AssetsPage() {
                                         className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                                     />
                                 </div>
+                                {editingAsset.requiresWarranty && editingAsset.category !== 'Food & Dining' && (
+                                    <div className="space-y-1">
+                                        <label className="text-sm font-medium text-slate-400">Warranty Expiry</label>
+                                        <input 
+                                            type="date" 
+                                            value={editAssetFormData.warrantyExpiry}
+                                            onChange={e => setEditAssetFormData({...editAssetFormData, warrantyExpiry: e.target.value})}
+                                            className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                                        />
+                                    </div>
+                                )}
+                                {editingAsset.requiresReturnWindow && editingAsset.category !== 'Food & Dining' && (
+                                    <div className="space-y-1">
+                                        <label className="text-sm font-medium text-slate-400">Return Window Expiry</label>
+                                        <input 
+                                            type="date" 
+                                            value={editAssetFormData.returnWindowExpiry}
+                                            onChange={e => setEditAssetFormData({...editAssetFormData, returnWindowExpiry: e.target.value})}
+                                            className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                                        />
+                                    </div>
+                                )}
+                                {editingAsset.requiresSubscription && editingAsset.category !== 'Food & Dining' && (
+                                    <div className="space-y-1">
+                                        <label className="text-sm font-medium text-slate-400">Subscription Renewal</label>
+                                        <input 
+                                            type="date" 
+                                            value={editAssetFormData.subscriptionRenewal}
+                                            onChange={e => setEditAssetFormData({...editAssetFormData, subscriptionRenewal: e.target.value})}
+                                            className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                                        />
+                                    </div>
+                                )}
                             </form>
                         </div>
                         <div className="bg-slate-900 border-t border-slate-800 p-6 flex justify-end gap-3 shrink-0">
@@ -626,8 +662,29 @@ export default function AssetsPage() {
                                                         <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-slate-700 text-slate-300">
                                                             {asset.category}
                                                         </span>
+                                                        {((!asset.brand || asset.brand === 'N/A' || asset.brand.toLowerCase() === 'unknown') || (!asset.name || asset.name === 'N/A') || (!asset.category) || (!asset.purchasePrice && asset.purchasePrice !== 0) || (asset.requiresWarranty && !asset.warrantyExpiry) || (asset.requiresReturnWindow && !asset.returnWindowExpiry) || (asset.requiresSubscription && !asset.subscriptionRenewal)) && (
+                                                            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1">
+                                                                <AlertTriangle className="w-3 h-3" />
+                                                                {((asset.requiresWarranty && !asset.warrantyExpiry) || (asset.requiresReturnWindow && !asset.returnWindowExpiry) || (asset.requiresSubscription && !asset.subscriptionRenewal)) ? 'Action Info Needed' : 'Missing Brand/Data'}
+                                                            </span>
+                                                        )}
                                                     </div>
                                                     <p className="text-slate-400 text-sm mb-3">Brand: <span className="text-slate-300">{asset.brand || 'N/A'}</span></p>
+                                                    
+                                                    {/* Predictive Warnings */}
+                                                    {(asset.requiresWarranty && !asset.warrantyExpiry) || (asset.requiresReturnWindow && !asset.returnWindowExpiry) || (asset.requiresSubscription && !asset.subscriptionRenewal) ? (
+                                                        <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3 mb-3 flex items-start gap-2">
+                                                            <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                                                            <div className="text-sm">
+                                                                <p className="text-amber-300 font-medium mb-1">Action Recommended</p>
+                                                                <div className="flex flex-wrap gap-2">
+                                                                    {asset.requiresWarranty && !asset.warrantyExpiry && <span className="text-xs bg-amber-500/20 text-amber-200 px-2 py-0.5 rounded border border-amber-500/20">Add Warranty Date</span>}
+                                                                    {asset.requiresReturnWindow && !asset.returnWindowExpiry && <span className="text-xs bg-amber-500/20 text-amber-200 px-2 py-0.5 rounded border border-amber-500/20">Add Return Date</span>}
+                                                                    {asset.requiresSubscription && !asset.subscriptionRenewal && <span className="text-xs bg-amber-500/20 text-amber-200 px-2 py-0.5 rounded border border-amber-500/20">Add Renewal Date</span>}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ) : null}
                                                     
                                                     {/* Asset Metadata inline if applicable */}
                                                     {shouldShowMetadata(asset.category) && (

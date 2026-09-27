@@ -3,6 +3,7 @@ const prisma = new PrismaClient();
 const path = require('path');
 const fs = require('fs');
 const Tesseract = require('tesseract.js');
+const pdfParse = require('pdf-parse');
 const llm = require('../services/llmEngine');
 
 exports.uploadDocument = async (req, res) => {
@@ -11,9 +12,18 @@ exports.uploadDocument = async (req, res) => {
             return res.status(400).json({ message: 'No file uploaded' });
         }
 
-        const ocrResult = await Tesseract.recognize(req.file.path, 'eng');
+        let extractedText = '';
+        if (req.file.mimetype === 'application/pdf') {
+            const dataBuffer = fs.readFileSync(req.file.path);
+            const data = await pdfParse(dataBuffer);
+            extractedText = data.text;
+        } else {
+            const ocrResult = await Tesseract.recognize(req.file.path, 'eng');
+            extractedText = ocrResult.data.text;
+        }
+
         const llmResponse = await llm.invoke({
-            input: ocrResult.data.text
+            input: extractedText
         });
 
         let responseContent = llmResponse.content;
@@ -74,6 +84,9 @@ exports.uploadDocument = async (req, res) => {
                         retailer: receiptData.merchant?.name,
                         gstin: receiptData.merchant?.gstin || null,
                         serialNumber: item.serial_number,
+                        requiresWarranty: item.requires_warranty || false,
+                        requiresReturnWindow: item.requires_return_window || false,
+                        requiresSubscription: item.requires_subscription || false,
                         metadataJson: item.metadata ? JSON.stringify(item.metadata) : null
                     }
                 });

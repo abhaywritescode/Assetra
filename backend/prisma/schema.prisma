@@ -70,8 +70,12 @@ model Asset {
   retailer        String?
   gstin           String?
   serialNumber    String?
-  warrantyExpiry  DateTime?
-  returnDeadline  DateTime?
+  requiresWarranty      Boolean       @default(false)
+  requiresReturnWindow  Boolean       @default(false)
+  requiresSubscription  Boolean       @default(false)
+  warrantyExpiry        DateTime?
+  returnWindowExpiry    DateTime?
+  subscriptionRenewal   DateTime?
   currentPrice    Float?        // Controlled comparison price
   priceCheckDate  DateTime?
   metadataJson    String?       // JSON string for dynamic category-specific fields
