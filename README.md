@@ -1,6 +1,5 @@
 <div align="center">
   <img src="assetra-logo.png" alt="Assetra Logo" width="300" />
-  <h1>Assetra</h1>
   <p><strong>Your Smart Asset, Document, and Financial Impact Manager</strong></p>
   
   [![React](https://img.shields.io/badge/React-18-blue.svg)](https://reactjs.org/)
