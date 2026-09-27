@@ -5,5 +5,5 @@ dev.db-journal
 uploads/
 dist/
 .DS_Store
-.eng.traineddata
+eng.traineddata
 migrations/
