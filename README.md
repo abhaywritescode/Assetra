@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://via.placeholder.com/150/0f172a/ffffff?text=Assetra" alt="Assetra Logo" width="150" height="150" />
+  <img src="assetra-logo.png" alt="Assetra Logo" width="300" />
   <h1>Assetra</h1>
   <p><strong>Your Smart Asset, Document, and Financial Impact Manager</strong></p>
   
