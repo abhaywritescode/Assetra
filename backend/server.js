@@ -10,7 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(helmet());
+app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(cors({
     origin: process.env.CLIENT_URL || 'http://localhost:5173',
     credentials: true
@@ -25,12 +25,14 @@ const chatRoutes = require('./routes/chatRoutes');
 const actionRoutes = require('./routes/actionRoutes');
 const impactRoutes = require('./routes/impactRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
+const assetRoutes = require('./routes/assetRoutes');
 app.use('/api/auth', authRoutes);
 app.use('/api/documents', docRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/actions', actionRoutes);
 app.use('/api/impact', impactRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/assets', assetRoutes);
 
 // Basic health check
 app.get('/', (req, res) => {

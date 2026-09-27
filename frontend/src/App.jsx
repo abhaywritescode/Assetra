@@ -4,6 +4,7 @@ import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import UploadPage from './pages/Upload';
+import AssetsPage from './pages/Assets';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import AIAssistant from './components/AIAssistant';
@@ -42,6 +43,7 @@ const AppLayout = () => (
         <Route path="/login" element={<AuthRoute><Login /></AuthRoute>} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/upload" element={<ProtectedRoute><UploadPage /></ProtectedRoute>} />
+        <Route path="/assets" element={<ProtectedRoute><AssetsPage /></ProtectedRoute>} />
     </Routes>
 );
 

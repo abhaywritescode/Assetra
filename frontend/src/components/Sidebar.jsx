@@ -1,11 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, UploadCloud } from 'lucide-react';
+import { LayoutDashboard, UploadCloud, Package } from 'lucide-react';
 
 export default function Sidebar() {
     const location = useLocation();
 
     const links = [
         { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+        { name: 'My Assets', path: '/assets', icon: Package },
         { name: 'Upload Receipt', path: '/upload', icon: UploadCloud },
     ];
 

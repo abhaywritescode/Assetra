@@ -31,16 +31,29 @@ model RefreshToken {
 }
 
 model Document {
-  id           String    @id @default(uuid())
-  userId       String
-  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  filename     String
-  filepath     String
-  mimeType     String
-  fileSize     Int
-  fileHash     String?
-  createdAt    DateTime  @default(now())
-  assets       Asset[]
+  id              String    @id @default(uuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  filename        String
+  filepath        String
+  mimeType        String
+  fileSize        Int
+  fileHash        String?
+
+  // Receipt/Merchant Details
+  retailerName    String?
+  shopAddress     String?
+  gstin           String?
+  billNumber      String?
+  purchaseDate    DateTime?
+  purchaseTime    String?
+  paymentMethod   String?
+  subtotal        Float?
+  taxAmount       Float?
+  totalAmount     Float?
+  
+  createdAt       DateTime  @default(now())
+  assets          Asset[]
 }
 
 model Asset {
@@ -48,18 +61,20 @@ model Asset {
   userId          String
   user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   documentId      String?
-  document        Document?     @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  document        Document?     @relation(fields: [documentId], references: [id], onDelete: Cascade)
   name            String
   brand           String?
   category        String        // e.g., Electronics, Appliances
   purchasePrice   Float
   purchaseDate    DateTime
   retailer        String?
+  gstin           String?
   serialNumber    String?
   warrantyExpiry  DateTime?
   returnDeadline  DateTime?
   currentPrice    Float?        // Controlled comparison price
   priceCheckDate  DateTime?
+  metadataJson    String?       // JSON string for dynamic category-specific fields
   actions         Action[]
   transactions    Transaction[]
   createdAt       DateTime      @default(now())

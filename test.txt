@@ -1,0 +1,6 @@
+backend
+npx nodemon server.js
+npx prisma studio
+
+frontend
+npm run dev
