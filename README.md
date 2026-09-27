@@ -20,9 +20,10 @@ Assetra's built-in **Action Engine** alerts you to urgent tasks, while the **Imp
 
 ## ✨ Key Features
 
-- 🔐 **Secure Authentication**: Robust user signup and login system using JWT, bcrypt, and HttpOnly cookies.
-- 📄 **Smart Document Management**: Upload receipts, invoices, and contracts. Assetra securely stores and organizes them.
-- 🛋️ **Asset Tracking**: Automatically build an inventory of your assets. Track purchase prices, retailers, serial numbers, warranties, and return windows.
+- 🔐 **Secure Multi-Tenant Authentication**: Robust user signup and login system using JWT, bcrypt, and HttpOnly cookies. Total data isolation per user.
+- 📄 **Smart Document Management (Parent-Child Architecture)**: Upload receipts, invoices, and contracts. Assetra securely stores the parent receipts and intelligently extracts all associated child assets (line items).
+- 🛋️ **Granular Asset Tracking**: Automatically build an inventory of your assets. Track purchase prices, retailers, serial numbers, warranties, and return windows. Includes **Smart Editing and Data Healing** to easily detect and fill missing information.
+- 🇮🇳 **Localized Extraction**: Advanced AI parsing optimized for Indian Rupees (₹) and exhaustive receipt data extraction.
 - ⚡ **Action Engine**: Receive smart, proactive alerts for:
   - 🔄 Return Window Expiries
   - 🛡️ Warranty Expiries
